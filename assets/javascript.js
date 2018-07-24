@@ -1,13 +1,15 @@
+
+
 //Variables------
 var wordChoices = [
-    {word: "ferrari"},
-    {word: "lamborghini"},
-    {word: "maserati"},
-    {word: "tesla"},
-    {word: "mercedes"},
-    {word: "lotus"},
-    {word: "mclaren"},
-    {word: "bentley"}
+    {word:"ferrari"},
+    {word:"lamborghini"},
+    {word:"maserati"},
+    {word:"tesla"},
+    {word:"mercedes"},
+    {word:"lotus"},
+    {word:"mclaren"},
+    {word:"bentley"}
 ];
 
 //Generates a random number that will determine which word is used
@@ -26,7 +28,7 @@ var guessesNeeded = rWord.length;
 var remainingGuess = 9;
 
 //set up an array for the alphabet
-var alphabetArray = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+var alphabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 
 //set up answer array to store the answer as an array for indexing
 var answerArray = [];
@@ -37,18 +39,23 @@ var wrongAnswers = [];
 //check whether or not the guess is correct
 var correctGuesses = 0;
 
+//define a number of wins
+var wins = 0;
+
 //~~~~~~~GAME INITIALIZATION~~~~~~~~
 //intialize the game
 
 function init() {
     //change isGameRunning to true
-    isGameRunning = true;
+    isGameRunning = false;
     //generate a new random number
     randomNumber = Math.floor(Math.random() * wordChoices.length);
     //use the new random number to generate a word
-
+    var rWord = wordChoices[randomNumber].word;
     //for loop here that works to replace the letters with hyphens
-    
+    for (var i = 0; i < rWord.length; i++) {
+        answerArray[i] = "_";
+    }
     //set letters remaining to win = number of letters in word
     guessesNeeded = rWord.length;
     //reset any other attributes needed
@@ -56,35 +63,97 @@ function init() {
     remainingGuess = 9;
     //Define blank content for the HTML to be used for later
     GuessesLeft();
-    displayGuesses();
+    guessHandler();
     activeWord();
-}
+};
 //after a key is released check to see if the game is running, if not, start it
 
 //LISTENERS
 
 //make the game start
 document.onkeyup = function(event) {
-    if(isGameRunning == true) {
-        //game function goes here
+    if(isGameRunning == false) {
+        alphaCheck(event);
     } else {
         init();
-    }
-}
+    };
+};
+
+function alphaCheck(attempt) {
+    if (alphabet.indexOf(attempt.key) > -1) {
+        guessCheck(attempt);
+        console.log(attempt);
+    };
+};
 //Create a function that sends the guess key to a correct function or
 //incorrect function based on which array it should go to
+function guessCheck(guess) {
+    if (rWord.indexOf(guess.key) > -1) {
+        correct(guess);}
+    else {
+        incorrect(guess);
+    };
+};
 
+function inputHandler(guess) {
+    for (var i = 0; i < rWord.length; i++) {
+        if (guess.key === rWord[i]) {
+            //push correct letter to answer array
+            answerArray[i] = guess.key.toUpperCase();
+            activeWord();
+            correctGuesses--;
+            if (correctGuesses === 0) {
+                wins++;
+                winHandler();
+                activeWord();
+                init();
+                alert("Congrats! You won!");
+            
+            };
+        };
+    };
+};
 
-//a function to make sure the input is a letter
+function correct(guess) {
+    if (answerArray.indexOf(guess.key.toUpperCase()) < 0) {
+        inputHandler(guess);
+    };
+};
 
-//a function to push a correct guess to the answer array
-//as upper case letters, inside a loop that also
-//decreases the letters remaining with it
-
-// create the function that runs on correct
-
-//create an incorrect function that runs on the wrong guess
+function incorrect(guess) {
+    if (wrongAnswers.indexOf(guess.key.toUpperCase()) < 0) {
+    wrongAnswers.push(guess.key.toUpperCase());
+    guessHandler(); 
+    GuessesLeft();
+    remainingGuess--;
+    if (remainingGuess === 0) {
+        init();
+        alert("Sorry! You lost!");
+    };};
+};
 
 //create handlers for number of wins, letters guessed, guesses remaining,
 //and the current solve status
+
+//display number of wins
+function winHandler() {
+    $("#score").text(wins);
+};
+
+//display letters the user has guessed
+function guessHandler() {
+    var guessHandle = document.querySelector("#guesses");
+    guessHandle.textContent = wrongAnswers.join(", ");
+};
+
+//display remaining guesses
+function GuessesLeft() {
+    $("#attempts").text(remainingGuess);
+};
+
+//shows current solve status
+function activeWord() {
+    var activeWord = document.querySelector("#activeWord");
+    activeWord.innerHTML = answerArray.join(" ");
+};
 
