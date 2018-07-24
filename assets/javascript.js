@@ -12,12 +12,11 @@ var wordChoices = [
     {word:"bentley"}
 ];
 
-//Generates a random number that will determine which word is used
-var randomNumber = Math.floor(Math.random() * wordChoices.length);
-
 //Define a variable to check if game is running
 var isGameRunning = false;
 
+//Generates a random number that will determine which word is used
+var randomNumber = Math.floor(Math.random() * wordChoices.length);
 //make a variable that pulls the random word from the array
 var rWord = wordChoices[randomNumber].word;
 
@@ -35,9 +34,6 @@ var answerArray = [];
 //set up an array for incorrect answers
 var wrongAnswers = [];
 
-//check whether or not the guess is correct
-var correctGuesses = 0;
-
 //define a number of wins
 var wins = 0;
 
@@ -48,19 +44,19 @@ function init() {
     //change isGameRunning to true
     isGameRunning = true;
     //generate a new random number
-    var randomNumber = Math.floor(Math.random() * wordChoices.length);
+    randomNumber = Math.floor(Math.random() * wordChoices.length);
     //use the new random number to generate a word
-    var rWord = wordChoices[randomNumber].word;
+    rWord = wordChoices[randomNumber].word;
+    guessesNeeded = rWord.length;
     //for loop here that works to replace the letters with hyphens
     for (var i = 0; i < rWord.length; i++) {
-        answerArray[i] = "_";
+        answerArray[i] = "-";
     }
-    //set letters remaining to win = number of letters in word
-    guessesNeeded = rWord.length;
+   
+    
     //reset any other attributes needed
     wrongAnswers = [];
     remainingGuess = 9;
-    //Define blank content for the HTML to be used for later
     GuessesLeft();
     guessHandler();
     activeWord();
@@ -93,27 +89,6 @@ function guessCheck(guess) {
         incorrect(guess);
     };
 };
-
-function inputHandler(guess) {
-    for (var i = 0; i < rWord.length; i++) {
-        if (guess.key === rWord[i]) {
-            //push correct letter to answer array
-            answerArray[i] = guess.key.toUpperCase();
-            activeWord();
-            guessesNeeded--;
-            if (guessesNeeded === 0) {
-                wins++;
-                winHandler();
-                activeWord();
-                isGameRunning = false;
-                init();
-                alert("Congrats! You won!");
-            
-            };
-        };
-    };
-};
-
 function correct(guess) {
     if (answerArray.indexOf(guess.key.toUpperCase()) < 0) {
         inputHandler(guess);
@@ -127,10 +102,33 @@ function incorrect(guess) {
     GuessesLeft();
     remainingGuess--;
     if (remainingGuess === 0) {
+        isGameRunning = false;
         init();
         alert("Sorry! You lost!");
     };};
 };
+
+function inputHandler(guess) {
+    for (var i = 0; i < rWord.length; i++) {
+        if (guess.key === rWord[i]) {
+            //push correct letter to answer array
+            answerArray[i] = guess.key.toUpperCase();
+            activeWord();
+            guessesNeeded--;
+            if (guessesNeeded === 0) {
+                wins++;
+                winHandler();
+                activeWord();
+                isGameRunning = false;
+                init ();
+                alert("Congrats! You won!");
+            
+            };
+        };
+    };
+};
+
+
 
 //create handlers for number of wins, letters guessed, guesses remaining,
 //and the current solve status
@@ -154,6 +152,6 @@ function GuessesLeft() {
 //shows current solve status
 function activeWord() {
     var activeWord = document.querySelector("#activeWord");
-    activeWord.innerHTML = answerArray.join(" ");
+    activeWord.innerHTML = answerArray.join("");
 };
 
