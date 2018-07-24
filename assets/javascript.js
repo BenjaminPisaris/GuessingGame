@@ -49,14 +49,15 @@ function init() {
     rWord = wordChoices[randomNumber].word;
     guessesNeeded = rWord.length;
     $("#activeWord").text("");
+    answerArray = [];
     //for loop here that works to replace the letters with hyphens
     for (var i = 0; i < rWord.length; i++) {
         answerArray[i] = "-";
     }
    
-    
     //reset any other attributes needed
     wrongAnswers = [];
+    
     remainingGuess = 9;
     GuessesLeft();
     guessHandler();
