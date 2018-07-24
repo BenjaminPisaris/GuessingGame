@@ -48,6 +48,7 @@ function init() {
     //use the new random number to generate a word
     rWord = wordChoices[randomNumber].word;
     guessesNeeded = rWord.length;
+    $("#activeWord").text("");
     //for loop here that works to replace the letters with hyphens
     for (var i = 0; i < rWord.length; i++) {
         answerArray[i] = "-";
