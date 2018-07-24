@@ -23,7 +23,6 @@ var rWord = wordChoices[randomNumber].word;
 
 //Define how many letters need to be guessed to win
 var guessesNeeded = rWord.length;
-
 //define a remaining number of guesses
 var remainingGuess = 9;
 
@@ -47,9 +46,9 @@ var wins = 0;
 
 function init() {
     //change isGameRunning to true
-    isGameRunning = false;
+    isGameRunning = true;
     //generate a new random number
-    randomNumber = Math.floor(Math.random() * wordChoices.length);
+    var randomNumber = Math.floor(Math.random() * wordChoices.length);
     //use the new random number to generate a word
     var rWord = wordChoices[randomNumber].word;
     //for loop here that works to replace the letters with hyphens
@@ -72,7 +71,7 @@ function init() {
 
 //make the game start
 document.onkeyup = function(event) {
-    if(isGameRunning == false) {
+    if(isGameRunning == true) {
         alphaCheck(event);
     } else {
         init();
@@ -101,11 +100,12 @@ function inputHandler(guess) {
             //push correct letter to answer array
             answerArray[i] = guess.key.toUpperCase();
             activeWord();
-            correctGuesses--;
-            if (correctGuesses === 0) {
+            guessesNeeded--;
+            if (guessesNeeded === 0) {
                 wins++;
                 winHandler();
                 activeWord();
+                isGameRunning = false;
                 init();
                 alert("Congrats! You won!");
             
